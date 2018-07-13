@@ -6,4 +6,9 @@
  * All rights reserved.
  */
 
-export default from './Image';
+import Image from './Image';
+import tfsAdapter from './cdnAdapter/tfs';
+
+Image.tfsAdapter = tfsAdapter;
+
+export default Image;
