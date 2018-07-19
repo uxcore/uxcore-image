@@ -47,7 +47,8 @@
   },
   "dependencies": {
     "classnames": "^2.1.2",
-    "prop-types": "15.x"
+    "prop-types": "15.x",
+    "react-lifecycles-compat": "^3.0.4"
   },
   "contributors": [],
   "license": "MIT"

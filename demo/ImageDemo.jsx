@@ -18,9 +18,42 @@ class Demo extends React.Component {
   }
 
   render() {
+
+
+    const tfsImage = 'https://img.alicdn.com/tfs/TB1ltSkD1GSBuNjSspbXXciipXa-300-300.jpg';
+    const djangoImage = 'https://dl.django.t.taobao.com/rest/1.0/image?fileIds=IRj9SMzrT-mcifkVw_rEswAAACAAAQED&acl=43496dac05a29fe5043e2fa8283c455d&token=B1lIu_0jZUaOn3rFgnoq4wABUYAAAAFkrNL2pwAAACAAAQED&timestamp=1531982807064&zoom=1000x1000';
+    const ossImage = 'https://alinw-oss.alicdn.com/alinw-node-admin-public-oss/2018-7-12/1531372852377/（阿里味儿首页）脱贫banner（280x180）.jpg?x-oss-process=image/resize,m_fixed,h_360,w_560';
+    
+    const options = {
+      width: 70,
+      height: 80,
+      multiple: 2,
+    };
+
+    const ossOptions = {
+      width: 70,
+      height: 80,
+      multiple: 2,
+      adapterType: 'oss'
+    }
+
     return (
       <div>
-        <Image />
+        <img src={Image.adapter.tfs(tfsImage, options)} />
+        <img src={Image.adapter.django(djangoImage, options)} />
+        <img src={Image.adapter.oss(ossImage, ossOptions)} />
+        <Image
+          className=""
+          src="https://img.alicdn.com/tfs/TB1ltSkD1GSBuNjSspbXXciipXa-300-300.jpg"
+          alt=""
+          title=""
+          lazyLoad={true}
+          urlAdapter={true}
+          adapterType={"tfs"}
+          multiple={2}
+          width="auto"
+          height="auto"
+        />
       </div>
     );
   }
