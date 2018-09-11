@@ -48,6 +48,7 @@
   "dependencies": {
     "classnames": "^2.1.2",
     "prop-types": "15.x",
+    "rc-util": "^4.5.1",
     "react-lifecycles-compat": "^3.0.4"
   },
   "contributors": [],

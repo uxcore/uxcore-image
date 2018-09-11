@@ -1,7 +1,9 @@
 import util from '../util';
 
 export default function djangoAdapter(url, options) {
-  let { width, height, multiple, type, adapterType } = options;
+  let {
+    width, height, multiple, type, adapterType,
+  } = options;
 
   // 首先判断是否是django的cdn格式
   // todo: 这里的判断不够精准
@@ -10,7 +12,7 @@ export default function djangoAdapter(url, options) {
   }
 
   // 如果django的图片是gif的，那么缩放有问题，这里先留个口
-  if (type && type == 'gif') {
+  if (type && type === 'gif') {
     return url;
   }
 
@@ -35,6 +37,6 @@ export default function djangoAdapter(url, options) {
 
   // django的zoom拼接很灵活，服务端会自动处理能够返回的大小
   return util.urlSetParams(url, {
-    zoom: `${width * multiple}x${height * multiple}`
-  })
+    zoom: `${width * multiple}x${height * multiple}`,
+  });
 }

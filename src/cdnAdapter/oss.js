@@ -1,13 +1,15 @@
 import util from '../util';
 
 export default function djangoAdapter(url, options) {
-  let { width, height, multiple, adapterType } = options;
+  let {
+    width, height, multiple, adapterType,
+  } = options;
 
   // 由于oss的url是可以任意配置的，所以这里必须强制指定
   if (adapterType !== 'oss') {
-      return url;
+    return url;
   }
-  
+
   // 自动宽高不缩放
   if (width === 'auto' || height === 'auto') {
     return url;
@@ -34,5 +36,5 @@ export default function djangoAdapter(url, options) {
   // django的zoom拼接很灵活，服务端会自动处理能够返回的大小
   return util.urlSetParams(url, {
     'x-oss-process': `image/resize,w_${width},h_${height}`,
-  })
+  });
 }
