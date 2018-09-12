@@ -1,17 +1,16 @@
 import util from '../util';
 
 export default function djangoAdapter(url, options) {
+  const {
+    multiple, adapterType,
+  } = options;
+
   let {
-    width, height, multiple, adapterType,
+    width, height,
   } = options;
 
   // 由于oss的url是可以任意配置的，所以这里必须强制指定
   if (adapterType !== 'oss') {
-    return url;
-  }
-
-  // 自动宽高不缩放
-  if (width === 'auto' || height === 'auto') {
     return url;
   }
 
@@ -24,8 +23,9 @@ export default function djangoAdapter(url, options) {
     height = height.toString().slice(0, -2);
   }
 
-  // 如果传入的width、height不是纯数字，即类似 "100%", "100em" 这种类型
-  if (width != window.parseInt(width, 10) || height != window.parseInt(height, 10)) {
+  // 如果传入的width、height 中存在非数字，那么直接返回，比如 100em, 100%, auto, 100rem 等
+  if (window.parseInt(width, 10).toString() !== width.toString()
+    || window.parseInt(height, 10).toString() !== height.toString()) {
     return url;
   }
 

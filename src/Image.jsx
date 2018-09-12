@@ -15,12 +15,33 @@ import adapter from './cdnAdapter';
 
 
 function handleImageSrc(props) {
-  const { enableUrlAdapter, adapterType, src } = props;
+  const {
+    enableUrlAdapter, multiple, adapterType, src,
+    width, height, type,
+  } = props;
+
+  const options = {
+    multiple,
+    type,
+    adapterType,
+    width,
+    height,
+  };
+
   if (enableUrlAdapter) {
+    // 如果指定了适配器类型，那么直接使用
     if (adapterType) {
+      return adapter[adapterType](src, options);
+    }
 
-    } else {
+    // 如果没有指定适配器类型，那么遍历所有适配器
+    const adapterKeys = Object.keys(adapter);
+    for (let i = 0; i < adapterKeys.length; i++) {
+      const newUrl = adapter[adapterKeys[i]](src, options);
 
+      if (newUrl !== src) {
+        return newUrl;
+      }
     }
   }
 
@@ -124,17 +145,17 @@ class Image extends React.Component {
         width={width}
       />
     ) : (
-      <div
-        {...others}
-        className={cls}
-        style={{
-          display: 'inline-block',
-          width,
-          height,
-          ...style,
-        }}
-      />
-    );
+        <div
+          {...others}
+          className={cls}
+          style={{
+            display: 'inline-block',
+            width,
+            height,
+            ...style,
+          }}
+        />
+      );
   }
 }
 

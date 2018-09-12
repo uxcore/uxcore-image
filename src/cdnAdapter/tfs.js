@@ -5,25 +5,30 @@ const sizeList = [16, 20, 24, 30, 32, 36, 40, 48, 50, 60, 64, 70,
   460, 480, 500, 540, 560, 570, 580, 600, 640, 670, 720, 760, 800,
   960, 1200, 1280, 2200];
 
+const TFS_URL = '.alicdn.com/tfs/';
+
 
 export default function tfsAdapter(url, options) {
-  let {
-    width, height, multiple, adapterType,
+  const {
+    multiple, adapterType,
   } = options;
 
-  // 首先判断是否是tfs的cdn格式
-  // todo: 这里的判断不够精准
-  if (adapterType !== 'tfs' && url.indexOf('.alicdn.com/tfs/') == -1) {
+  let {
+    width, height,
+  } = options;
+
+  // 如果手动指定了适配类型，但是却不是tfs，那么直接返回
+  if (adapterType && adapterType !== 'tfs') {
+    return url;
+  }
+
+  // 如果没有指定适配类型，但是url规则不符合tfs规则，那么返回
+  if (adapterType == null && url.indexOf(TFS_URL) === -1) {
     return url;
   }
 
   // svg不缩放
-  if (url.slice(-4) == '.svg') {
-    return url;
-  }
-
-  // 自动宽高不缩放
-  if (width === 'auto' || height === 'auto') {
+  if (url.slice(-4) === '.svg') {
     return url;
   }
 
@@ -36,8 +41,9 @@ export default function tfsAdapter(url, options) {
     height = height.toString().slice(0, -2);
   }
 
-  // 如果传入的width、height不是纯数字，即类似 "100%", "100em" 这种类型
-  if (width != window.parseInt(width, 10) || height != window.parseInt(height, 10)) {
+  // 如果传入的width、height 中存在非数字，那么直接返回，比如 100em, 100%, auto, 100rem 等
+  if (window.parseInt(width, 10).toString() !== width.toString()
+    || window.parseInt(height, 10).toString() !== height.toString()) {
     return url;
   }
 

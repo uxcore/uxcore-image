@@ -43,8 +43,8 @@ class Demo extends React.Component {
           alt=""
           title=""
           lazyLoad
-          urlAdapter
-          adapterType="tfs"
+          enableUrlAdapter
+          adapterType=""
           multiple={2}
           width="100px"
           height="100px"
