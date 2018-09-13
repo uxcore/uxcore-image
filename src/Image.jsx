@@ -13,17 +13,31 @@ import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import adapter from './cdnAdapter';
 // Lazyload Image
 
+function getDPR() {
+  if (typeof window !== 'undefined') { return window.devicePixelRatio || 1; }
+  return 1;
+}
 
 function handleImageSrc(props) {
-  const { enableUrlAdapter, adapterType, src } = props;
+  const {
+    enableUrlAdapter, adapterType, src, width, height,
+  } = props;
   if (enableUrlAdapter) {
+    const adapterOptions = {
+      adapterType, width, height, multiple: getDPR(),
+    };
     if (adapterType) {
-
+      if (adapter[adapterType]) {
+        return adapter[adapterType](src, adapterOptions);
+      }
     } else {
-
+      let url = src;
+      Object.keys(adapter).forEach((key) => {
+        url = adapter[key](url, adapterOptions);
+      });
+      return url;
     }
   }
-
   return src;
 }
 
@@ -32,24 +46,36 @@ class Image extends React.Component {
 
   static propTypes = {
     src: PropTypes.string,
-    defaultSrc: PropTypes.string,
     adapterType: PropTypes.string,
     className: PropTypes.string,
     prefixCls: PropTypes.string,
     defaultPic: PropTypes.string,
     showDefaultPicDelay: PropTypes.number,
     enableUrlAdapter: PropTypes.bool,
+    style: PropTypes.object,
+    height: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    width: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    lazyload: PropTypes.bool,
   };
 
   static defaultProps = {
     src: '',
-    defaultSrc: '',
     adapterType: '',
     className: '',
     prefixCls: 'uxcore-image',
-    defaultPic: 'https://g.alicdn.com/uxcore/pic/default.svg',
+    defaultPic: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='1000' height='1000' style=''%3E %3Crect width='100%25' height='100%25' x='0' y='0' fill='%23f2f3f5' stroke='none'/%3E %3C/svg%3E",
     showDefaultPicDelay: 200,
     enableUrlAdapter: true,
+    style: {},
+    height: undefined,
+    width: undefined,
+    lazyload: true,
   };
 
   constructor(props) {
@@ -59,25 +85,27 @@ class Image extends React.Component {
       prevSrc: props.src,
       prevEnableUrlAdapter: props.enableUrlAdapter,
       prevAdapterType: props.adapterType,
-      loaded: false,
-      showDefault: false,
+      loaded: !props.lazyload,
+      showDefault: !props.lazyload,
     };
   }
 
   componentDidMount() {
-    const { showDefaultPicDelay } = this.props;
-    this.loadListener = addEventListener(window, 'load', () => {
-      setTimeout(() => {
-        this.setState({
-          loaded: true,
-        });
-      }, 0);
-    });
-    this.delayTimer = setTimeout(() => {
-      this.setState({
-        showDefault: true,
+    const { showDefaultPicDelay, lazyload } = this.props;
+    if (lazyload) {
+      this.loadListener = addEventListener(window, 'load', () => {
+        setTimeout(() => {
+          this.setState({
+            loaded: true,
+          });
+        }, 0);
       });
-    }, showDefaultPicDelay);
+      this.delayTimer = setTimeout(() => {
+        this.setState({
+          showDefault: true,
+        });
+      }, showDefaultPicDelay);
+    }
   }
 
   componentWillUnmount() {
@@ -112,6 +140,11 @@ class Image extends React.Component {
     const cls = classnames(prefixCls, {
       [className]: !!className,
     });
+
+    Object.keys(Image.propTypes).forEach((key) => {
+      delete others[key];
+    });
+
 
     return showDefault ? (
       <img

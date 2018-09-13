@@ -36,22 +36,32 @@ class Demo extends React.Component {
 
     return (
       <div>
-
+        <h2>
+          tfs adapter
+        </h2>
+        <img alt="" src={Image.adapter.tfs(tfsImage, options)} />
+        <h2>
+          django Adapter
+        </h2>
+        <img alt="" src={Image.adapter.django(djangoImage, options)} />
+        <h2>
+          oss Adapter
+        </h2>
+        <img alt="" src={Image.adapter.oss(ossImage, ossOptions)} />
+        <h2>
+          use Image Component
+        </h2>
         <Image
           className=""
           src="https://img.alicdn.com/tfs/TB1ltSkD1GSBuNjSspbXXciipXa-300-300.jpg"
           alt=""
           title=""
-          lazyLoad
-          urlAdapter
+          lazyload={true}
+          enableUrlAdapter
           adapterType="tfs"
-          multiple={2}
           width="100px"
           height="100px"
         />
-        <img alt="" src={Image.adapter.tfs(tfsImage, options)} />
-        {/* <img alt="" src={Image.adapter.django(djangoImage, options)} />
-        <img alt="" src={Image.adapter.oss(ossImage, ossOptions)} /> */}
       </div>
     );
   }
