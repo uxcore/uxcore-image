@@ -56,7 +56,7 @@ class Demo extends React.Component {
           src="https://img.alicdn.com/tfs/TB1ltSkD1GSBuNjSspbXXciipXa-300-300.jpg"
           alt=""
           title=""
-          lazyload={true}
+          lazyload
           enableUrlAdapter
           adapterType="tfs"
           width="100px"

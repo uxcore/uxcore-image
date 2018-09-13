@@ -11,7 +11,6 @@ import classnames from 'classnames';
 import { polyfill } from 'react-lifecycles-compat';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
 import adapter from './cdnAdapter';
-// Lazyload Image
 
 function getDPR() {
   if (typeof window !== 'undefined') { return window.devicePixelRatio || 1; }
@@ -20,22 +19,32 @@ function getDPR() {
 
 function handleImageSrc(props) {
   const {
-    enableUrlAdapter, adapterType, src, width, height,
+    enableUrlAdapter, adapterType, src,
+    width, height, type,
   } = props;
+
+  const options = {
+    multiple: getDPR(),
+    type,
+    adapterType,
+    width,
+    height,
+  };
+
   if (enableUrlAdapter) {
-    const adapterOptions = {
-      adapterType, width, height, multiple: getDPR(),
-    };
+    // 如果指定了适配器类型，那么直接使用
     if (adapterType) {
-      if (adapter[adapterType]) {
-        return adapter[adapterType](src, adapterOptions);
+      return adapter[adapterType](src, options);
+    }
+
+    // 如果没有指定适配器类型，那么遍历所有适配器
+    const adapterKeys = Object.keys(adapter);
+    for (let i = 0; i < adapterKeys.length; i++) {
+      const newUrl = adapter[adapterKeys[i]](src, options);
+
+      if (newUrl !== src) {
+        return newUrl;
       }
-    } else {
-      let url = src;
-      Object.keys(adapter).forEach((key) => {
-        url = adapter[key](url, adapterOptions);
-      });
-      return url;
     }
   }
   return src;
