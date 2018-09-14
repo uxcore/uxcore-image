@@ -10,52 +10,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { polyfill } from 'react-lifecycles-compat';
 import addEventListener from 'rc-util/lib/Dom/addEventListener';
+import { isDocumentLoaded, handleImageSrc } from './utils';
 import adapter from './cdnAdapter';
 
-function getDPR() {
-  if (typeof window !== 'undefined') { return window.devicePixelRatio || 1; }
-  return 1;
-}
+const DEFAULT_TRANS_PIC = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='1000' height='1000' style=''%3E %3Crect fill='transparent' width='100%25' height='100%25' x='0' y='0' stroke='none'/%3E %3C/svg%3E";
 
-function handleImageSrc(props) {
-  const {
-    enableUrlAdapter, adapterType, src,
-    width, height, type,
-  } = props;
-
-  const options = {
-    multiple: getDPR(),
-    type,
-    adapterType,
-    width,
-    height,
-  };
-
-  if (enableUrlAdapter) {
-    // 如果指定了适配器类型，那么直接使用
-    if (adapterType) {
-      return adapter[adapterType](src, options);
-    }
-
-    // 如果没有指定适配器类型，那么遍历所有适配器
-    const adapterKeys = Object.keys(adapter);
-    for (let i = 0; i < adapterKeys.length; i++) {
-      const newUrl = adapter[adapterKeys[i]](src, options);
-
-      if (newUrl !== src) {
-        return newUrl;
-      }
-    }
-  }
-  return src;
-}
-
-const isDocumentLoaded = () => {
-  if (typeof document !== 'undefined') {
-    return document.readyState === 'complete';
-  }
-  return true;
-};
 
 class Image extends React.Component {
   static displayName = 'Image';
@@ -97,7 +56,7 @@ class Image extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      renderSrc: handleImageSrc(props),
+      renderSrc: handleImageSrc(props, adapter),
       prevSrc: props.src,
       prevEnableUrlAdapter: props.enableUrlAdapter,
       prevAdapterType: props.adapterType,
@@ -115,7 +74,7 @@ class Image extends React.Component {
             this.setState({
               loaded: true,
             });
-          }, 3000);
+          }, 0);
         });
       }
 
@@ -148,11 +107,11 @@ class Image extends React.Component {
 
   render() {
     const {
-      className, prefixCls, defaultPic, style, width, height, ...others
+      className, prefixCls, defaultPic, ...others
     } = this.props;
     const { renderSrc, loaded, showDefault } = this.state;
 
-    let imgSrc = defaultPic;
+    let imgSrc = showDefault ? defaultPic : DEFAULT_TRANS_PIC;
     if (loaded) {
       imgSrc = renderSrc;
     }
@@ -165,26 +124,12 @@ class Image extends React.Component {
     });
 
 
-    return showDefault ? (
+    return (
       <img
         {...others}
         alt=""
         className={cls}
         src={imgSrc}
-        style={style}
-        height={height}
-        width={width}
-      />
-    ) : (
-      <div
-        {...others}
-        className={cls}
-        style={{
-          display: 'inline-block',
-          width,
-          height,
-          ...style,
-        }}
       />
     );
   }

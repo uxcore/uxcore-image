@@ -69,9 +69,11 @@ class Demo extends React.Component {
           lazyload
           enableUrlAdapter
           adapterType="tfs"
-          width="100px"
           height="100px"
         />
+        <span>
+          测试左侧图片是否可以占位
+        </span>
         <h2>
           render Image after document is loaded after 3s
         </h2>

@@ -1,4 +1,4 @@
-import util from '../util';
+import { urlSetParams } from '../utils';
 
 export default function djangoAdapter(url, options) {
   const {
@@ -34,7 +34,7 @@ export default function djangoAdapter(url, options) {
   height = Math.min(height * multiple, 4096);
 
   // django的zoom拼接很灵活，服务端会自动处理能够返回的大小
-  return util.urlSetParams(url, {
+  return urlSetParams(url, {
     'x-oss-process': `image/resize,w_${width},h_${height}`,
   });
 }

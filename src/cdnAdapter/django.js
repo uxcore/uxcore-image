@@ -1,4 +1,4 @@
-import util from '../util';
+import { urlSetParams } from '../utils';
 
 const DJANGO_URL = 'dl.django.t.taobao.com/rest/1.0/image';
 const DJANGO_DAILY_URL = 'dl-daily.django.alibaba.net/rest/1.0/image';
@@ -44,7 +44,7 @@ export default function djangoAdapter(url, options) {
   }
 
   // django的zoom拼接很灵活，服务端会自动处理能够返回的大小
-  return util.urlSetParams(url, {
+  return urlSetParams(url, {
     zoom: `${width * multiple}x${height * multiple}`,
   });
 }
