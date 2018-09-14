@@ -50,6 +50,13 @@ function handleImageSrc(props) {
   return src;
 }
 
+const isDocumentLoaded = () => {
+  if (typeof document !== 'undefined') {
+    return document.readyState === 'complete';
+  }
+  return true;
+};
+
 class Image extends React.Component {
   static displayName = 'Image';
 
@@ -94,7 +101,7 @@ class Image extends React.Component {
       prevSrc: props.src,
       prevEnableUrlAdapter: props.enableUrlAdapter,
       prevAdapterType: props.adapterType,
-      loaded: !props.lazyload,
+      loaded: !props.lazyload || isDocumentLoaded(),
       showDefault: !props.lazyload,
     };
   }
@@ -102,13 +109,16 @@ class Image extends React.Component {
   componentDidMount() {
     const { showDefaultPicDelay, lazyload } = this.props;
     if (lazyload) {
-      this.loadListener = addEventListener(window, 'load', () => {
-        setTimeout(() => {
-          this.setState({
-            loaded: true,
-          });
-        }, 0);
-      });
+      if (!isDocumentLoaded()) {
+        this.loadListener = addEventListener(window, 'load', () => {
+          setTimeout(() => {
+            this.setState({
+              loaded: true,
+            });
+          }, 3000);
+        });
+      }
+
       this.delayTimer = setTimeout(() => {
         this.setState({
           showDefault: true,
