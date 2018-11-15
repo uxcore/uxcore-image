@@ -54,7 +54,7 @@ export default function tfsAdapter(url, options) {
   let fixSize = null;
 
   for (let i = 0; i < sizeList.length; i++) {
-    if (sizeList[i] > size) {
+    if (sizeList[i] >= size) {
       fixSize = sizeList[i];
       break;
     }

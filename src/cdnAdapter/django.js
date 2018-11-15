@@ -19,7 +19,7 @@ export default function djangoAdapter(url, options) {
 
   // 如果没有指定适配类型，但是url规则不符合django规则，那么返回
   if (adapterType == null
-    && (url.indexOf(DJANGO_URL) === -1 || url.indexOf(DJANGO_DAILY_URL) === -1)) {
+    && (url.indexOf(DJANGO_URL) === -1 && url.indexOf(DJANGO_DAILY_URL) === -1)) {
     return url;
   }
 
