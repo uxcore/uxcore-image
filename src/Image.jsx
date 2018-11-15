@@ -126,8 +126,8 @@ class Image extends React.Component {
 
     return (
       <img
-        {...others}
         alt=""
+        {...others}
         className={cls}
         src={imgSrc}
       />
