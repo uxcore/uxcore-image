@@ -98,7 +98,7 @@ class Image extends React.Component {
   static getDerivedStateFromProps(props, state) {
     if (props.src !== state.prevSrc) {
       return {
-        renderSrc: handleImageSrc(props),
+        renderSrc: handleImageSrc(props, adapter),
         prevSrc: props.src,
       };
     }
